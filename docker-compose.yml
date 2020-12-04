@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    command: --lower_case_table_names=1
+    volumes:
+      - ./db:/var/lib/mysql
+    ports: 
+      - 3306:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Qaw189541
+    container_name: db
+
+  api:
+    build: ./src/
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment: 
+      DBHOST: db
+      DBUSER: root
+      DBPASSWORD: Qaw189541
+      ASPNETCORE_ENVIRONMENT: Development
+    restart: always
+    container_name: api
+
+  web:
+    build: ./src/QyonAdventureWorks.Web/
+    ports: 
+      - 80:80
+    depends_on:
+      - api
+    environment: 
+      NODE_ENV: development
+    restart: always
+    container_name: web
+    
